@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import ListItem from "./ListItem";
+import MemoizedListItem, { ListItem } from "./ListItem";
 import { provideUUID, generateFakeItem } from "../util";
 import TestItem1 from "./TestItem1";
 
@@ -10,6 +10,8 @@ interface IContainerProps {}
 const Container: React.FC<IContainerProps> = () => {
   const [array, setArray] = useState(initial);
 
+  const [memo, setMemo] = useState(false);
+
   const addItem = useCallback(() => {
     setArray(array => [generateFakeItem()].concat(array));
   }, []);
@@ -18,13 +20,27 @@ const Container: React.FC<IContainerProps> = () => {
     setArray(provideUUID(initCount));
   }, []);
 
+  const toggleMemo = useCallback(() => {
+    setMemo(memo => !memo);
+  }, []);
+
   return (
     <div>
       <TestItem1 />
       <button onClick={addItem}>add</button>
-      <button onClick={regenerate}>refresh</button>
+      <button onClick={regenerate}>reset</button>
+      <button
+        className={`memo-button-${memo ? "on" : "off"}`}
+        onClick={toggleMemo}
+      >
+        memoization is {memo ? "on" : "off"}
+      </button>
       {array.map(item => {
-        return <ListItem key={item.uuid} val={item.uuid} />;
+        return memo ? (
+          <MemoizedListItem key={item.uuid} val={item.uuid} />
+        ) : (
+          <ListItem key={item.uuid} val={item.uuid} />
+        );
       })}
     </div>
   );

@@ -4,7 +4,8 @@ import { expensiveCalculation } from "../util";
 interface IListItemProps {
   val: any;
 }
-const ListItem: React.FC<IListItemProps> = props => {
+
+export const ListItem: React.FC<IListItemProps> = props => {
   const { val } = props;
   expensiveCalculation(100);
   return <div>{val}</div>;
